@@ -1,0 +1,257 @@
+**CONSTRAINTS**
+
+CREATE CONSTRAINT user_id IF NOT EXISTS FOR (u:User) REQUIRE u.userId IS UNIQUE;
+CREATE CONSTRAINT person_id IF NOT EXISTS FOR (p:Person) REQUIRE p.personId IS UNIQUE;
+
+CREATE CONSTRAINT movie_id IF NOT EXISTS FOR (m:Movie) REQUIRE m.movieId IS UNIQUE;
+CREATE CONSTRAINT series_id IF NOT EXISTS FOR (s:Series) REQUIRE s.seriesId IS UNIQUE;
+
+CREATE CONSTRAINT genre_name IF NOT EXISTS FOR (g:Genre) REQUIRE [g.name](http://g.name/) IS UNIQUE;
+
+**GÊNEROS**
+
+CREATE (:Genre {name: "Fantasia"});
+CREATE (:Genre {name: "Drama"});
+CREATE (:Genre {name: "Comedia"});
+CREATE (:Genre {name: "Suspense"});
+CREATE (:Genre {name: "Romance"});
+CREATE (:Genre {name: "Comédia Dramática"});
+CREATE (:Genre {name: "Drama Policial"});
+
+**ATORES**
+
+MERGE (:Actor {actorId: "a1", name: "Logan Lerman"});
+MERGE (:Actor {actorId: "a2", name: "Emma Watson"});
+MERGE (:Actor {actorId: "a3", name: "Sandra Hüller"});
+MERGE (:Actor {actorId: "a4", name: "Greta Lee"});
+MERGE (:Actor {actorId: "a5", name: "Nicole Kidman"});
+MERGE (:Actor {actorId: "a6", name: "Michael C. Hall"});
+MERGE (:Actor {actorId: "a7", name: "Sarah Snook"});
+MERGE (:Actor {actorId: "a8", name: "Steven Yeun"});
+MERGE (:Actor {actorId: "a9", name: "Tom Ellis"});
+MERGE (:Actor {actorId: "a10", name: "Jenna Fischer"});
+
+**DIRETORES**
+
+MERGE (:Director {directorId: "d1", name: "Stephen Chbosky"});
+MERGE (:Director {directorId: "d2", name: "Alfonso Cuarón"});
+MERGE (:Director {directorId: "d3", name: "Justine Triet"});
+MERGE (:Director {directorId: "d4", name: "Celine Song"});
+MERGE (:Director {directorId: "d5", name: "Baz Luhrmann"});
+MERGE (:Director {directorId: "d6", name: "Marcos Siega"});
+MERGE (:Director {directorId: "d7", name: "Minkie Spiro"});
+MERGE (:Director {directorId: "d8", name: "Lee Sung Jin"});
+MERGE (:Director {directorId: "d9", name: "Tom Kapinos"});
+MERGE (:Director {directorId: "d10", name: "Randall Einhorn"});
+
+**FILMES**
+
+MERGE (m1:Movie {movieId: "m1", title: "As vantagens de ser invisível", year: 2012, duration: 103});
+MERGE (m2:Movie {movieId: "m2", title: "Harry Potter e o prisioneiro de Azkaban", year: 2004, duration: 142});
+MERGE (m3:Movie {movieId: "m3", title: "Anatomia de uma queda", year: 2023, duration: 152});
+MERGE (m4:Movie {movieId: "m4", title: "Vidas Passadas", year: 2023, duration: 106});
+MERGE (m5:Movie {movieId: "m5", title: "Moulin Rouge", year: 2001, duration: 128});
+
+**SÉRIE**
+
+MERGE (s1:Series {seriesId:"s1", title:"Dexter", startYear:2006, seasons:8});
+MERGE (s2:Series {seriesId:"s2", title:"All Her Fault", startYear:2025, seasons:1});
+MERGE (s3:Series {seriesId:"s3", title:"Treta", startYear:2023, seasons:2});
+MERGE (s4:Series {seriesId:"s4", title:"Lúcifer", startYear:2016, seasons:6});
+MERGE (s4:Series {seriesId:"s4", title:"The Office", startYear:2005, seasons:9});
+
+**Relações de Gênero (IN_GENRE)**
+
+**// FILMES**
+MATCH (m:Movie {title:"As vantagens de ser invisível"})
+MERGE (g:Genre {name:"Drama"})
+MERGE (m)-[:IN_GENRE]->(g);
+
+MATCH (m:Movie {title:"Harry Potter e o prisioneiro de Azkaban"})
+MERGE (g:Genre {name:"Fantasia"})
+MERGE (m)-[:IN_GENRE]->(g);
+
+MATCH (m:Movie {title:"Anatomia de uma queda"})
+MERGE (g:Genre {name:"Suspense"})
+MERGE (m)-[:IN_GENRE]->(g);
+
+MATCH (m:Movie {title:"Vidas Passadas"})
+MERGE (g:Genre {name:"Drama"})
+MERGE (m)-[:IN_GENRE]->(g);
+
+MATCH (m:Movie {title:"Moulin Rouge"})
+MERGE (g:Genre {name:"Romance"})
+MERGE (m)-[:IN_GENRE]->(g);
+
+**// SÉRIES**
+MATCH (s:Series {title:"Dexter"})
+MERGE (g:Genre {name:"Drama Policial"})
+MERGE (s)-[:IN_GENRE]->(g);
+
+MATCH (s:Series {title:"All Her Fault"})
+MERGE (g:Genre {name:"Suspense"})
+MERGE (s)-[:IN_GENRE]->(g);
+
+MATCH (s:Series {title:"Treta"})
+MERGE (g:Genre {name:"Drama"})
+MERGE (s)-[:IN_GENRE]->(g);
+
+MATCH (s:Series {title:"Lúcifer"})
+MERGE (g:Genre {name:"Comédia dramática"})
+MERGE (s)-[:IN_GENRE]->(g);
+
+MATCH (s:Series {title:"The Office"})
+MERGE (g:Genre {name:"Comédia"})
+MERGE (s)-[:IN_GENRE]->(g);
+
+**Relações de Atuação (ACTED_IN)**
+
+// As vantagens de ser invisível
+MATCH (m:Movie {title:"As vantagens de ser invisível"})
+MERGE (p:Person {name:"Logan Lerman"})
+MERGE (p)-[:ACTED_IN]->(m);
+
+// Harry Potter e o prisioneiro de Azkaban
+MATCH (m:Movie {title:"Harry Potter e o prisioneiro de Azkaban"})
+MERGE (p:Person {name:"Emma Watson"})
+MERGE (p)-[:ACTED_IN]->(m);
+
+// Anatomia de uma queda
+MATCH (m:Movie {title:"Anatomia de uma queda"})
+MERGE (p:Person {name:"Sandra Hüller"})
+MERGE (p)-[:ACTED_IN]->(m);
+
+// Vidas Passadas
+MATCH (m:Movie {title:"Vidas Passadas"})
+MERGE (p:Person {name:"Greta Lee"})
+MERGE (p)-[:ACTED_IN]->(m);
+
+// Moulin Rouge
+MATCH (m:Movie {title:"Moulin Rouge"})
+MERGE (p:Person {name:"Nicole Kidman"})
+MERGE (p)-[:ACTED_IN]->(m);
+
+// Dexter
+MATCH (s:Series {title:"Dexter"})
+MERGE (p:Person {name:"Michael C. Hall"})
+MERGE (p)-[:ACTED_IN]->(s);
+
+// All Her Fault
+MATCH (s:Series {title:"All Her Fault"})
+MERGE (p:Person {name:"Sarah Snook"})
+MERGE (p)-[:ACTED_IN]->(s);
+
+// Treta
+MATCH (s:Series {title:"Treta"})
+MERGE (p:Person {name:"Steven Yeun"})
+MERGE (p)-[:ACTED_IN]->(s);
+
+// Lúcifer
+MATCH (s:Series {title:"Lúcifer"})
+MERGE (p:Person {name:"Tom Ellis"})
+MERGE (p)-[:ACTED_IN]->(s);
+
+// The Office
+MATCH (s:Series {title:"The Office"})
+MERGE (p:Person {name:"John Krasinski"})
+MERGE (p)-[:ACTED_IN]->(s);
+
+**Relações deDireção (DIRECTED_IN)**
+
+// As vantagens de ser invisível
+MATCH (m:Movie {title:"As vantagens de ser invisível"})
+MERGE (p:Person {name:"Stephen Chbosky"})
+MERGE (p)-[:DIRECTED]->(m);
+
+// Harry Potter e o prisioneiro de Azkaban
+MATCH (m:Movie {title:"Harry Potter e o prisioneiro de Azkaban"})
+MERGE (p:Person {name:"Alfonso Cuarón"})
+MERGE (p)-[:DIRECTED]->(m);
+
+// Anatomia de uma queda
+MATCH (m:Movie {title:"Anatomia de uma queda"})
+MERGE (p:Person {name:"Justine Triet"})
+MERGE (p)-[:DIRECTED]->(m);
+
+// Vidas Passadas
+MATCH (m:Movie {title:"Vidas Passadas"})
+MERGE (p:Person {name:"Celine Song"})
+MERGE (p)-[:DIRECTED]->(m);
+
+// Moulin Rouge
+MATCH (m:Movie {title:"Moulin Rouge"})
+MERGE (p:Person {name:"Baz Luhrmann"})
+MERGE (p)-[:DIRECTED]->(m);
+
+// Dexter
+MATCH (s:Series {title:"Dexter"})
+MERGE (p:Person {name:"Marcos Siega"})
+MERGE (p)-[:DIRECTED]->(s);
+
+// All Her Fault
+MATCH (s:Series {title:"All Her Fault"})
+MERGE (p:Person {name:"Minkie Spiro"})
+MERGE (p)-[:DIRECTED]->(s);
+
+// Treta
+MATCH (s:Series {title:"Treta"})
+MERGE (p:Person {name:"Lee Sung Jin"})
+MERGE (p)-[:DIRECTED]->(s);
+
+// Lúcifer
+MATCH (s:Series {title:"Lúcifer"})
+MERGE (p:Person {name:"Tom Kapinos"})
+MERGE (p)-[:DIRECTED]->(s);
+
+// The Office
+MATCH (s:Series {title:"The Office"})
+MERGE (p:Person {name:"Randall Einhorn"})
+MERGE (p)-[:DIRECTED]->(s);
+
+**USUÁRIOS**
+
+MERGE (:User {name:"Eduardo"});
+MERGE (:User {name:"Mônica"});
+MERGE (:User {name:"Alessandra"});
+MERGE (:User {name:"Roberta"});
+MERGE (:User {name:"Fábio"});
+MERGE (:User {name:"Sandra"});
+MERGE (:User {name:"Leticia"});
+MERGE (:User {name:"Fernando"});
+MERGE (:User {name:"Marisa"});
+MERGE (:User {name:"Elisa"});
+
+**RELAÇÕES DE COSNSUMO (WATCHED com propriedade rating)**
+
+//FILMES
+MATCH (u:User {name:"Eduardo"}), (m:Movie {title:"Harry Potter e o prisioneiro de Azkaban"})
+MERGE (u)-[:WATCHED {rating:5}]->(m);
+
+MATCH (u:User {name:"Mônica"}), (m:Movie {title:"Vidas Passadas"})
+MERGE (u)-[:WATCHED {rating:4}]->(m);
+
+MATCH (u:User {name:"Alessandra"}), (m:Movie {title:"Moulin Rouge"})
+MERGE (u)-[:WATCHED {rating:5}]->(m);
+
+MATCH (u:User {name:"Roberta"}), (m:Movie {title:"Anatomia de uma queda"})
+MERGE (u)-[:WATCHED {rating:4}]->(m);
+
+MATCH (u:User {name:"Fábio"}), (m:Movie {title:"As vantagens de ser invisível"})
+MERGE (u)-[:WATCHED {rating:5}]->(m);
+
+//SERIES
+
+MATCH (u:User {name:"Sandra"}), (s:Series {title:"Dexter"})
+MERGE (u)-[:WATCHED {rating:5}]->(s);
+
+MATCH (u:User {name:"Leticia"}), (s:Series {title:"Treta"})
+MERGE (u)-[:WATCHED {rating:4}]->(s);
+
+MATCH (u:User {name:"Fernando"}), (s:Series {title:"Lúcifer"})
+MERGE (u)-[:WATCHED {rating:4}]->(s);
+
+MATCH (u:User {name:"Marisa"}), (s:Series {title:"The Office"})
+MERGE (u)-[:WATCHED {rating:5}]->(s);
+
+MATCH (u:User {name:"Elisa"}), (s:Series {title:"All Her Fault"})
+MERGE (u)-[:WATCHED {rating:4}]->(s);
